@@ -1,20 +1,13 @@
-import nodemailer from "nodemailer";
+import sendGridMail from "@sendgrid/mail";
 
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 export const sendEmail = async (to: string, subject: string, html: string) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: process.env.EMAIL_USER || 'yawit@sayouthatwork.com',
     to,
     subject,
     html,
   };
-
-  // await transporter.sendMail(mailOptions);
+  await sendGridMail.send(mailOptions);
 };

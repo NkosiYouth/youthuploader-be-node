@@ -23,7 +23,6 @@ class AuthService {
       const user = await AuthModel.findOne({ email });
       const token = TokenService.generateAccessToken(user!);
       const magicLink = `${process.env.CLIENT_URL}/magic-login?token=${token}`;
-      console.log(magicLink);
       await EmailService.sendMagicLinkEmail(user!.firstName, user!.email, magicLink);
     } catch (error) {
       console.log(error);
