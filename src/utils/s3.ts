@@ -17,35 +17,44 @@ if (!bucketName || !region || !accessKeyId || !secretAccessKey) {
     throw new Error('Environment variables for AWS S3 are not set correctly');
 }
 
-const s3 = new S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-});
+export default class S3Helper {
+    private static s3 = new S3({
+        region,
+        accessKeyId,
+        secretAccessKey,
+    });
 
-export function uploadFile(file: File, prefix: string = ""): Promise<S3.ManagedUpload.SendData> {
-    const fileStream: ReadStream = fs.createReadStream(file.path);
-    const uploadParams: S3.PutObjectRequest = {
-        Bucket: bucketName,
-        Body: fileStream,
-        Key: `${prefix}${file.filename}`,
-    };
-    return s3.upload(uploadParams).promise();
-}
+    static async uploadFile(file: File, prefix: string = ""): Promise<S3.ManagedUpload.SendData> {
+        const fileStream: ReadStream = fs.createReadStream(file.path);
+        const uploadParams: S3.PutObjectRequest = {
+            Bucket: bucketName,
+            Body: fileStream,
+            Key: `${prefix}${file.filename}`,
+        };
+        return this.s3.upload(uploadParams).promise();
+    }
 
-export function getFile(key: string): Readable {
-    const downloadParams: S3.GetObjectRequest = {
-        Bucket: bucketName,
-        Key: key,
-    };
-    return s3.getObject(downloadParams).createReadStream();
-}
+    static async uploadMultipleFiles(files: File[], prefix: string = ""): Promise<S3.ManagedUpload.SendData[]> {
+        const uploadPromises: Promise<S3.ManagedUpload.SendData>[] = files.map(file =>
+            this.uploadFile(file, prefix)
+        );
+        return Promise.all(uploadPromises);
+    }
 
-export function deleteFile(key: string): Promise<S3.DeleteObjectOutput> {
-    const deleteParams: S3.DeleteObjectRequest = {
-        Bucket: bucketName,
-        Key: key,
-    };
+    static getFile(key: string): Readable {
+        const downloadParams: S3.GetObjectRequest = {
+            Bucket: bucketName,
+            Key: key,
+        };
+        return this.s3.getObject(downloadParams).createReadStream();
+    }
 
-    return s3.deleteObject(deleteParams).promise();
+    static deleteFile(key: string): Promise<S3.DeleteObjectOutput> {
+        const deleteParams: S3.DeleteObjectRequest = {
+            Bucket: bucketName,
+            Key: key,
+        };
+
+        return this.s3.deleteObject(deleteParams).promise();
+    }
 }

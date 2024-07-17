@@ -4,7 +4,7 @@ import { AuthService } from "../services";
 import BaseController from "./BaseController";
 import { File, HttpStatus } from "../types";
 import { createAuthUserSchema, createMagicLinkSchema, tokenSchema } from "../validators";
-import { uploadFile } from "../utils/s3";
+import { S3Helper } from "../utils";
 
 class FileController extends BaseController {
     // Upload Files
@@ -17,20 +17,9 @@ class FileController extends BaseController {
                 })
             }
             const files = req.files as Express.Multer.File[];
-            const uploadPromises = files.map((file) => {
-                const fileData: File = {
-                    path: file.path,
-                    filename: file.filename,
-                    mimetype: file.mimetype,
-                    originalname: file.originalname,
-                    size: file.size,
-                };
-                // return uploadFile(fileData);
-                return fileData;
-            });
-            const results = await Promise.all(uploadPromises);
+            const uploadResults = await S3Helper.uploadMultipleFiles(files, 'pdf/');
             this.sendResponse(res, HttpStatus.OK,{
-                files: results
+                files: uploadResults
             });
         } catch (error) {
             this.sendError(res, error);
