@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import BaseController from "./BaseController";
-import { HttpStatus } from "../types";
-import { S3Helper } from "../utils";
+import { File, HttpStatus } from "../types";
+import { S3Helper, uniqifyFileName } from "../utils";
 import { FileService } from "../services";
 
 class FileController extends BaseController {
@@ -16,7 +16,11 @@ class FileController extends BaseController {
                 });
             }
 
-            const files = req.files as Express.Multer.File[];
+            let files: File[] = req.files as Express.Multer.File[];
+
+            files = files.map(file => ({
+                ...uniqifyFileName(file)
+            }));
 
             // Upload files to S3
             const uploadResults = await S3Helper.uploadMultipleFiles(files, 'pdf/');
