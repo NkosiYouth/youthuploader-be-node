@@ -1,27 +1,36 @@
-
 import { Request, Response } from "express";
-import { AuthService } from "../services";
 import BaseController from "./BaseController";
-import { File, HttpStatus } from "../types";
-import { createAuthUserSchema, createMagicLinkSchema, tokenSchema } from "../validators";
+import { HttpStatus } from "../types";
 import { S3Helper } from "../utils";
+import { FileService } from "../services";
 
 class FileController extends BaseController {
     // Upload Files
     async create(req: Request, res: Response): Promise<void> {
         try {
-            if (!req.files) {
-                this.sendError(res, undefined, {
+            // Check if files are uploaded
+            if (!req.files || !(req.files instanceof Array)) {
+                return this.sendError(res, undefined, {
                     statusCode: HttpStatus.BAD_REQUEST,
-                    message: 'No files uploaded.'
-                })
+                    message: 'No files uploaded or invalid file format.'
+                });
             }
+
             const files = req.files as Express.Multer.File[];
+
+            // Upload files to S3
             const uploadResults = await S3Helper.uploadMultipleFiles(files, 'pdf/');
-            this.sendResponse(res, HttpStatus.OK,{
-                files: uploadResults
-            });
+            const filesPath = uploadResults.map(item => item.Key);
+
+            console.log(req.user);
+            const userId = req.user._id;
+            // Create file records in the database
+            const results = await FileService.createFiles(filesPath, userId);
+
+            // Send successful response
+            this.sendResponse(res, HttpStatus.OK, results);
         } catch (error) {
+            // Handle errors
             this.sendError(res, error);
         }
     }
