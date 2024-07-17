@@ -11,7 +11,7 @@ export interface DecodedToken {
   exp?: number;  // expiration time
 }
 
-export interface File {
+export interface File extends Express.Multer.File {
   path: string;
   filename: string;
   mimetype: string;

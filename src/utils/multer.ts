@@ -12,7 +12,7 @@ const storage = multer.memoryStorage();
 //     cb(null, path.join(__dirname, '../../uploads')); // Specify the destination folder
 //   },
 //   filename: (req, file, cb) => {
-//     const timestamp = Date.now(); // Get the current timestamp
+    // const timestamp = Date.now(); // Get the current timestamp
 //     const fileExtension = path.extname(file.originalname); // Extract the file extension
 //     const filename = `${timestamp}${fileExtension}`; // Concatenate the timestamp and file extension
 //     cb(null, filename);
