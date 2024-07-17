@@ -34,10 +34,25 @@ export default class S3Helper {
         return this.s3.upload(uploadParams).promise();
     }
 
-    static async uploadMultipleFiles(files: File[], prefix: string = ""): Promise<S3.ManagedUpload.SendData[]> {
-        const uploadPromises: Promise<S3.ManagedUpload.SendData>[] = files.map(file =>
-            this.uploadFile(file, prefix)
-        );
+    // static async uploadMultipleFiles(files: File[], prefix: string = ""): Promise<S3.ManagedUpload.SendData[]> {
+    //     const uploadPromises: Promise<S3.ManagedUpload.SendData>[] = files.map(file =>
+    //         this.uploadFile(file, prefix)
+    //     );
+    //     return Promise.all(uploadPromises);
+    // }
+
+    static async uploadMultipleFiles(files: Express.Multer.File[], prefix: string = ''): Promise<S3.ManagedUpload.SendData[]> {
+        const uploadPromises = files.map(file => {
+            const uploadParams: S3.PutObjectRequest = {
+                Bucket: bucketName,
+                Key: `${prefix}${file.originalname}`, // Use original name or generate a unique name
+                Body: file.buffer, // Use file.buffer instead of file.path
+                ContentType: file.mimetype, // Set the correct MIME type
+            };
+
+            return this.s3.upload(uploadParams).promise();
+        });
+
         return Promise.all(uploadPromises);
     }
 

@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { AuthService } from '../services';
 import TokenService from '../services/TokenService';
-import { decode } from 'punycode';
 import { toObjectId } from '../utils';
 
 declare module 'express' {
