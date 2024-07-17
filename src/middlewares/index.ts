@@ -1,1 +1,1 @@
-export { default as JWTVerify} from "./JWTVerify";
+export { default as verifyToken } from "./verifyToken";

@@ -38,7 +38,6 @@ class AuthService {
     const user = await AuthModel.findOne({ email: decoded.email });
     return user;
   }
-
 }
 
 export default new AuthService();

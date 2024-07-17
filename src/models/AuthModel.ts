@@ -1,5 +1,3 @@
-// src/models/AuthModel.ts
-
 import mongoose, { Schema} from "mongoose";
 import bcrypt from "bcrypt";
 import { AuthDocument, UserRole } from "../types";
