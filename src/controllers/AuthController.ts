@@ -13,7 +13,7 @@ class AuthController extends BaseController {
       const newUser = await AuthService.createAuthUser(validatedData);
       this.sendResponse(res, HttpStatus.CREATED, newUser);
     } catch (error: any) {
-      this.sendError(res, HttpStatus.BAD_REQUEST, error.message);
+      this.sendError(res, error);
     }
   }
 
@@ -25,11 +25,13 @@ class AuthController extends BaseController {
         await AuthService.generateMagicLink(validatedData.email);
         this.sendResponse(res, HttpStatus.OK, 'Magic Link sent!');
       } else {
-        this.sendError(res, HttpStatus.NOT_FOUND, 'Auth User does not exists!');
+        this.sendError(res, undefined, {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Auth User does not exists!'
+        });
       }
-
     } catch (error: any) {
-      this.sendError(res, HttpStatus.BAD_REQUEST, error.message);
+      this.sendError(res, error);
     }
   }
 
@@ -38,7 +40,10 @@ class AuthController extends BaseController {
       const validatedData = await tokenSchema.validateAsync(req.query);
       const user = await AuthService.verifyToken(validatedData.token);
       if (!user) {
-        return this.sendError(res, HttpStatus.UNAUTHORIZED, "Invalid or expired token");
+        return this.sendError(res, undefined, {
+          statusCode: HttpStatus.UNAUTHORIZED,
+          message: "Invalid or expired token"
+        });
       }
       this.sendResponse(res, HttpStatus.OK, user);
     } catch (error: any) {

@@ -12,3 +12,7 @@ export interface AuthDocument extends Document {
   password: string;
   role: UserRole;
 }
+
+export interface FileDocument extends Document {
+
+}

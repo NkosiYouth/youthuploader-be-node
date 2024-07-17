@@ -10,8 +10,8 @@ config();
 // Ensure environment variables are defined
 const bucketName = process.env.AWS_S3_BUCKET_NAME as string;
 const region = process.env.AWS_S3_REGION as string;
-const accessKeyId = process.env.AWS_S3_ACCESS_KEY as string;
-const secretAccessKey = process.env.AWS_S3_SECRET_KEY as string;
+const accessKeyId = process.env.AWS_ACCESS_KEY as string;
+const secretAccessKey = process.env.AWS_SECRET_KEY as string;
 
 if (!bucketName || !region || !accessKeyId || !secretAccessKey) {
     throw new Error('Environment variables for AWS S3 are not set correctly');
