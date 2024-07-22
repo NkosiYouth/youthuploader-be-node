@@ -64,12 +64,21 @@ export default class S3Helper {
         return this.s3.getObject(downloadParams).createReadStream();
     }
 
-    static deleteFile(key: string): Promise<S3.DeleteObjectOutput> {
+    static async deleteFile(key: string): Promise<S3.DeleteObjectOutput> {
         const deleteParams: S3.DeleteObjectRequest = {
             Bucket: bucketName,
             Key: key,
         };
 
-        return this.s3.deleteObject(deleteParams).promise();
+        console.log(`Attempting to delete file with params:`, deleteParams);
+
+        try {
+            const result = await this.s3.deleteObject(deleteParams).promise();
+            console.log(`File deleted successfully:`, result);
+            return result;
+        } catch (error: any) {
+            console.error(`Error deleting file:`, error);
+            throw new Error(`Failed to delete file: ${error.message}`);
+        }
     }
 }

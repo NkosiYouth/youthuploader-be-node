@@ -23,4 +23,5 @@ export interface FileDocument extends Document {
   filePath: string;
   isVerified?: boolean;
   taskType?: TaskTypeEnum;
+  originalName?: string;
 }
