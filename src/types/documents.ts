@@ -25,3 +25,20 @@ export interface FileDocument extends Document {
   taskType?: TaskTypeEnum;
   originalName?: string;
 }
+
+export interface OrganizationDocument extends Document{
+  name: string;
+}
+
+
+export enum DocumentTypeEnum{
+  PASSPORT = "Passport",
+  ID = "ID",
+}
+
+export interface PageDocument extends Document{
+  fileId: Types.ObjectId;
+  pageNumber: number;
+  documentType: DocumentTypeEnum,
+  extractedText: string[]
+}
