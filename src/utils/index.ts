@@ -21,11 +21,14 @@ export const toObjectId = (value: any) => {
     return value; // Return as is if not a valid ObjectId
 };
 
-export const uniqifyFileName = (file: File): File => {
+export const uniqifyFileName = (file: Express.Multer.File): { file: Express.Multer.File; originalName: string } => {
     const fileExtension = path.extname(file.originalname);
     const filename = `${uuidv4()}${fileExtension}`;
     return {
-        ...file,
-        originalname: filename,
+        file: {
+            ...file,
+            originalname: filename,
+        },
+        originalName: file.originalname,
     };
-}
+};

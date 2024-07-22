@@ -18,3 +18,8 @@ export interface File extends Express.Multer.File {
   originalname: string;
   size: number;
 }
+
+export interface FileMetaData {
+  filePath: string;
+  originalName: string;
+}

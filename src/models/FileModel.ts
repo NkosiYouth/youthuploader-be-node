@@ -6,6 +6,10 @@ const fileSchema: Schema<FileDocument> = new Schema({
     type: String,
     required: true,
   },
+  originalName: {
+    type: String,
+    required: false
+  },
   uploadedBy: {
     type: Schema.Types.ObjectId,
     ref: 'Auth',

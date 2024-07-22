@@ -19,7 +19,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", AuthRoutes);
-app.use("/api/upload", FileRoutes);
+app.use("/api/files", FileRoutes);
 
 // Catch-all route
 app.get("*", (req: Request, res: Response) => {
